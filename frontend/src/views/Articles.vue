@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { CreateArticle, GetArticles } from '../../wailsjs/go/main/App'
-import { onMounted, reactive, ref, watchEffect } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { Article } from '../types'
 import ArticleModal from '../components/ArticleModal.vue'
 import Toolbar from '../components/Toolbar.vue'
 import useToast from '../composables/useToast';
 import FormInput from '../components/FormInput.vue'
+import useCart from '../composables/useCart'
 
 
 const toast = useToast()
+const {addToCart} = useCart()
 
 const options = [
-  { label: 'Nuevo', action: newArticle }
+  { label: 'Nuevo artículo', action: newArticle },
+  { label: 'Ver carrito', action: openCart },
 ]
 
 const articles = ref<Article[]>([])
@@ -52,8 +55,6 @@ function newArticle() {
     fob: 0,
     price: 0
   }
-
-  console.log(article.value)
   articleModalTitle.value = 'Nuevo artículo'
   isArticleModalVisible.value = true
 }
@@ -82,8 +83,10 @@ function closeArticleModal() {
   isArticleModalVisible.value = false
 }
 
+function openCart() {
+  console.log('open cart')
+}
 onMounted(() => {
-
   getArticles()
 }) 
 </script>
@@ -102,7 +105,7 @@ onMounted(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(article, key) of articles" :key="key">
+      <tr v-for="(article, key) of articles" :key="key" @click="addToCart(article)">
         <td class="text-center" style="width: 200px;">{{ article.code }}</td>
         <td>{{ article.description }}</td>
         <td class="text-center" style="width: 100px">{{ article.stock }}</td>
@@ -110,10 +113,15 @@ onMounted(() => {
       </tr>
     </tbody>
   </table>
+
   <Toolbar class="bottom-bar" :options />
 
-  <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
-    @cancel="closeArticleModal" @save="save" />
+  <ArticleModal 
+    :title="articleModalTitle" 
+    :visible="isArticleModalVisible" 
+    v-model="article"
+    @cancel="closeArticleModal" 
+    @save="save" />
 </template>
 
 <style lang="css" scoped>
@@ -140,11 +148,19 @@ table thead {
   }
 }
 
-table tbody tr td {
-  border: 1px solid #aaa;
-  padding: 8px;
+table tbody tr {
+  cursor: pointer;
+  transition: all .1s ease;
 
+  &:hover {
+    background-color: #ccc;
+  }
+  & td {
+    border: 1px solid #aaa;
+    padding: 8px;
+  }
 }
+
 
 .bottom-bar {
   border-top: 1px solid #000;

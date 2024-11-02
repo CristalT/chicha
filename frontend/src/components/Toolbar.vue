@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import useCart from '../composables/useCart';
 import Button from './Button.vue'
+
+const { total } = useCart()
 
 type Option = {
     label: string,
@@ -22,13 +25,17 @@ defineProps<{
                 </li>
             </ul>
         </nav>
+        $ {{ total }}
     </div>
 </template>
 
 <style lang="css" scoped>
 .toolbar-container {
-   background-color: #fff;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
 }
+
 nav {
     padding: 8px;
     display: flex;
@@ -36,10 +43,12 @@ nav {
     position: sticky;
     top: 0;
 }
+
 nav ul {
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
+    gap: 8px;
 }
 </style>

@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // App struct
@@ -18,10 +19,11 @@ func NewApp() *App {
 // startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-}
+	err := MakeMigrations()
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	if err != nil {
+		println("Error:", err.Error())
+	}
+
+	a.ctx = ctx
 }

@@ -10,22 +10,31 @@ defineProps<{
     options: Option[]
 }>()
 
+
 </script>
+
 <template>
-    <nav>
-        <ul>
-            <li v-for="(option, key) of options" :key="key">
-                <Button :label="option.label" @click="option.action" />
-            </li>
-        </ul>
-    </nav>
+    <div class="toolbar-container">
+        <nav>
+            <ul>
+                <li v-for="(option, key) of options" :key="key">
+                    <Button :label="option.label" @click="option.action" />
+                </li>
+            </ul>
+        </nav>
+    </div>
 </template>
 
 <style lang="css" scoped>
+.toolbar-container {
+   background-color: #fff;
+}
 nav {
-    margin-bottom: 10px;
+    padding: 8px;
     display: flex;
     justify-content: right;
+    position: sticky;
+    top: 0;
 }
 nav ul {
     display: flex;

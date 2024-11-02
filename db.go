@@ -1,0 +1,39 @@
+package main
+
+import (
+	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
+)
+
+var db *sql.DB
+
+func GetConnection() *sql.DB {
+	if db != nil {
+		return db
+	}
+
+	var err error
+	db, err = sql.Open("sqlite3", "data.sqlite")
+	if err != nil {
+		panic(err)
+	}
+	return db
+}
+
+func MakeMigrations() error {
+	db := GetConnection()
+	q := `CREATE TABLE IF NOT EXISTS articles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code VARCHAR(30) NOT NULL,
+            description VARCHAR(200) NOT NULL,
+            stock INTEGER DEFAULT 0 NOT NULL,
+			fob FLOAT DEFAULT 0 NOT NULL,
+			price FLOAT DEFAULT 0 NOT NULL
+         );`
+	_, err := db.Exec(q)
+	if err != nil {
+		return err
+	}
+	return nil
+}

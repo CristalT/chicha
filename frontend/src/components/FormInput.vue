@@ -1,17 +1,23 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-    label: string,
-    type?: 'text' | 'number'
+    label?: string,
+    type?: 'text' | 'number',
+    placeholder?: string
 }>(), {
-    type: 'text'
+    label: '',
+    type: 'text',
+    placeholder: ''
 })
 
+const model = defineModel()
 </script>
 <template>
     <div class="form-control">
         <label>
-            {{ label }}
-            <input :type />
+            <div v-if="label">
+                {{ label }}
+            </div>
+            <input :type v-model="model" :placeholder />
         </label>
     </div>
 </template>

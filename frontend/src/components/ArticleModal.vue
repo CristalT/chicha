@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import FormInput from './FormInput.vue'
 import Button from './Button.vue'
+import { Article } from '../types';
 
-defineEmits(['cancel'])
+defineEmits(['cancel', 'save'])
 defineProps<{
     visible: boolean,
-    title: string
+    title: string,
 }>()
+
+const data = defineModel<Article>({ required: true })
 </script>
 <template>
     <div class="modal" v-if="visible">
@@ -15,19 +18,18 @@ defineProps<{
                 {{ title }}
             </div>
             <div class="form">
-                <FormInput label="Código" />
-                <FormInput label="Descripción" />
-
+                <FormInput label="Código" v-model="data.code" />
+                <FormInput label="Descripción" v-model="data.description" />
                 <div class="row gap">
-                    <FormInput label="Stock" type="number" />
-                    <FormInput label="Costo" type="number" />
-                    <FormInput label="Precio" type="number" />
+                    <FormInput label="Stock" type="number" v-model="data.stock" />
+                    <FormInput label="Costo" type="number" v-model="data.fob" />
+                    <FormInput label="Precio" type="number" v-model="data.price" />
                 </div>
             </div>
 
             <div class="footer row gap justify-end">
                 <Button label="Cancelar" variant="secondary" @click="$emit('cancel')" />
-                <Button label="Guardar" @click="$emit('save')" />
+                <Button label="Guardar" @click="$emit('save', data)" />
             </div>
         </div>
     </div>

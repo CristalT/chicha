@@ -95,10 +95,10 @@ onMounted(() => {
   <table>
     <thead>
       <tr>
-        <th @click="setOrderBy('code')">Código</th>
-        <th @click="setOrderBy('description')">Descripción</th>
-        <th @click="setOrderBy('stock')">Stock</th>
-        <th @click="setOrderBy('price')">Precio</th>
+        <th @click="setOrderBy('code')" :class="{ underline: params.orderBy === 'code' }">Código</th>
+        <th @click="setOrderBy('description')" :class="{ underline: params.orderBy === 'description' }">Descripción</th>
+        <th @click="setOrderBy('stock')" :class="{ underline: params.orderBy === 'stock' }">Stock</th>
+        <th @click="setOrderBy('price')" :class="{ underline: params.orderBy === 'price' }">Precio</th>
       </tr>
     </thead>
     <tbody>
@@ -112,13 +112,8 @@ onMounted(() => {
   </table>
   <Toolbar class="bottom-bar" :options />
 
-  <ArticleModal 
-    :title="articleModalTitle" 
-    :visible="isArticleModalVisible" 
-    v-model="article"
-    @cancel="closeArticleModal" 
-    @save="save" 
-  />
+  <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
+    @cancel="closeArticleModal" @save="save" />
 </template>
 
 <style lang="css" scoped>
@@ -136,12 +131,19 @@ table thead {
 
   & tr th {
     padding: 8px;
+
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
 table tbody tr td {
   border: 1px solid #aaa;
   padding: 8px;
+
 }
 
 .bottom-bar {

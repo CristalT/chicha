@@ -54,3 +54,7 @@ table {
     justify-content: end;
 }
 
+.underline {
+    text-decoration: underline;
+}
+

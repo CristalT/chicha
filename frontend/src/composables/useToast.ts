@@ -11,12 +11,12 @@ type Notification = {
     type: NotificationType
 }
 
-const notifications = ref<Notification[]>([])
 
 export default function useToast() {
+    const notifications = ref<Notification[]>([])
     function pushNotification(notification: Notification) {
         notifications.value.push(notification)
-        
+
         setTimeout(() => {
             notifications.value.shift()
         }, 5000)

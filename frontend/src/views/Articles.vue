@@ -20,7 +20,7 @@ const params = reactive({
   terms: ''
 })
 const isArticleModalVisible = ref(false)
-const addToCartModalVisible = ref(false)
+const isAddToCartModalVisible = ref(false)
 const articleModalTitle = ref('')
 const article = ref<Article>({
   id: 0,
@@ -44,7 +44,7 @@ async function getArticles() {
 }
 
 function showAddToCart(item: Article) {
-  addToCartModalVisible.value = true
+  isAddToCartModalVisible.value = true
   article.value = item
   article.value.qty = 1
 }
@@ -84,16 +84,13 @@ function save(article: Article) {
 
 function addItemToCart(item: Article) {
   addToCart(item)
-  addToCartModalVisible.value = false
+  isAddToCartModalVisible.value = false
 }
 
 function closeArticleModal() {
   isArticleModalVisible.value = false
 }
 
-function openCart() {
-  console.log('open cart')
-}
 onMounted(() => {
   getArticles()
 }) 
@@ -145,7 +142,7 @@ onMounted(() => {
 
   </footer>
 
-  <ShowArticleModal v-model="article" :visible="addToCartModalVisible" @addToCart="addItemToCart" @close="addToCartModalVisible = false" /> 
+  <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart" @close="isAddToCartModalVisible = false" /> 
   <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
     @cancel="closeArticleModal" @save="save" />
 </template>

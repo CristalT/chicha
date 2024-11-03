@@ -2,7 +2,7 @@
 import FormInput from './FormInput.vue'
 import Button from './Button.vue'
 import { Article } from '../types';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch, watchEffect } from 'vue';
+import { computed, useTemplateRef, watch, watchEffect } from 'vue';
 
 const props = defineProps<{
     visible: boolean,

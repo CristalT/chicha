@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useTemplateRef } from 'vue';
+
+const input  = useTemplateRef('input')
 withDefaults(defineProps<{
     label?: string,
     type?: 'text' | 'number',
@@ -10,6 +13,16 @@ withDefaults(defineProps<{
 })
 
 const model = defineModel()
+
+function focus() {
+input.value?.focus()    
+}
+
+function select() {
+    input.value?.select()
+}
+
+defineExpose({ focus, select })
 </script>
 <template>
     <div class="form-control">
@@ -17,7 +30,7 @@ const model = defineModel()
             <div v-if="label">
                 {{ label }}
             </div>
-            <input :type v-model="model" :placeholder />
+            <input ref="input" :type v-model="model" :placeholder v-bind="$attrs" />
         </label>
     </div>
 </template>

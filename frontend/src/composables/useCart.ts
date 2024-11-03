@@ -16,15 +16,8 @@ export default function useCart() {
     }
 
     function addToCart(item: Article) {
-        const qty = prompt('Ingrese cantidad: ');
-        
-        if (Number.isNaN(Number(qty))) {
-            return addToCart(item)
-        }
-
         const cart = getStoredCart()
         cart[item.id] = item
-        cart[item.id].qty = Number(qty)
         storeCart(cart)
         calcTotal(cart)
         toast.success('Artículo agregado al carrito.')

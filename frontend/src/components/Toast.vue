@@ -6,11 +6,14 @@ const { notifications } = useToast()
 </script>
 
 <template>
-    <div class="toast">
-        <div class="notification" v-for="(notification, key) of notifications" :key="key">
-            {{ notification.message }}
+    <Teleport to="body">
+
+        <div class="toast">
+            <div class="notification" v-for="(notification, key) of notifications" :key="key">
+                {{ notification.message }}
+            </div>
         </div>
-    </div>
+    </Teleport>
 </template>
 
 <style lang="css" scoped>

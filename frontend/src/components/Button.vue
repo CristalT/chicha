@@ -19,20 +19,20 @@ button {
 }
 
 .primary {
-    background-color: #000;
+    background-color: #b31e8b;
     color: #fff;
 }
 
 .primary:hover {
-    background-color: #000000cf; 
+    background-color: #c735a0; 
 }
 
 .secondary {
-    background-color: #ddd;
-    color: #000;
+    background-color: #3f1055;
+    color: #fff;
 }
 
 .secondary:hover {
-    background-color: #ccc; 
+    background-color: #571e71; 
 }
 </style>

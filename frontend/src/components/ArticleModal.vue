@@ -52,7 +52,7 @@ const data = defineModel<Article>({ required: true })
     position: relative;
     box-shadow: 6px 6px 20px #101010;
     background-color: #fff;
-    height: 80vh;
+    height: 360px;
     width: 80vw;
     border-radius: 3px;
 }

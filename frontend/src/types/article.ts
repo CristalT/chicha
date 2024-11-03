@@ -5,4 +5,5 @@ export type Article = {
     stock: number
     fob: number
     price: number
+    qty?: number
 }

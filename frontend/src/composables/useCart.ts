@@ -6,12 +6,12 @@ const total = ref(0)
 export default function useCart() {
     const toast = useToast()
 
-    function getStoredCart() {
+    function getStoredCart(): Record<string, Article> {
         const storedCart = localStorage.getItem('cart')
         return storedCart ? JSON.parse(storedCart) : {}
     }
 
-    function storeCart(cart: Record<string, Article & { qty: number }>) {
+    function storeCart(cart: Record<string, Article>) {
         localStorage.setItem('cart', JSON.stringify(cart))
     }
 
@@ -30,9 +30,15 @@ export default function useCart() {
         }, 0)
     }
 
+    function finishCart() {
+        
+        storeCart({})
+        calcTotal(getStoredCart())
+    }
+
     onMounted(() => {
         calcTotal(getStoredCart())
     })
 
-    return { addToCart, calcTotal, total }
+    return { addToCart, calcTotal, total, getStoredCart, finishCart }
 }

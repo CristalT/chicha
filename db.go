@@ -21,7 +21,7 @@ func GetConnection() *sql.DB {
 	return db
 }
 
-func MakeMigrations() error {
+func createArticlesTable() error {
 	db := GetConnection()
 	q := `CREATE TABLE IF NOT EXISTS articles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,4 +36,27 @@ func MakeMigrations() error {
 		return err
 	}
 	return nil
+}
+
+func createSalesTable() error {
+	db := GetConnection()
+	q := `CREATE TABLE IF NOT EXISTS sales (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code VARCHAR(30) NOT NULL,
+            description VARCHAR(200) NOT NULL,
+			fob FLOAT DEFAULT 0 NOT NULL,
+			price FLOAT DEFAULT 0 NOT NULL,
+			qty INTEGER DEFAULT 0 NOT NULL,
+			date DATETIME DEFAULT CURRENT_TIMESTAMP
+         );`
+	_, err := db.Exec(q)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func MakeMigrations() {
+	createArticlesTable()
+	createSalesTable()
 }

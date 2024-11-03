@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 type Article struct {
@@ -12,6 +11,7 @@ type Article struct {
 	Stock       int     `json:"stock"`
 	Fob         float32 `json:"fob"`
 	Price       float32 `json:"price"`
+	Qty         *int    `json:"qty,omitempty"`
 }
 
 func (app *App) CreateArticle(a Article) error {
@@ -40,6 +40,36 @@ func (app *App) CreateArticle(a Article) error {
 	return nil
 }
 
+func (app *App) Sale(articles []Article) error {
+	db := GetConnection()
+
+	insertSQL := `INSERT INTO sales (code, description, fob, price, qty) VALUES (?, ?, ?, ?, ?)`
+	insertSaleStmt, err := db.Prepare(insertSQL)
+	if err != nil {
+		return err
+	}
+	defer insertSaleStmt.Close()
+
+	updateStockSQL := `UPDATE articles SET stock = (stock - ?) WHERE id = ?`
+	updateStockStmt, err := db.Prepare(updateStockSQL)
+	if err != nil {
+		return err
+	}
+	defer updateStockStmt.Close()
+
+	for _, article := range articles {
+		if _, err := insertSaleStmt.Exec(article.Code, article.Description, article.Fob, article.Price, article.Qty); err != nil {
+			return err
+		}
+
+		if _, err := updateStockStmt.Exec(article.Qty, article.Id); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (app *App) GetArticles(orderBy string, orderType string, terms string) ([]Article, error) {
 
 	db := GetConnection()
@@ -52,7 +82,6 @@ func (app *App) GetArticles(orderBy string, orderType string, terms string) ([]A
 		query = "SELECT * FROM articles WHERE code = '" + terms + "' OR description LIKE '%" + terms + "%' ORDER BY " + orderBy + " " + orderType
 	}
 
-	fmt.Println(query)
 	rows, err := db.Query(query)
 
 	if err != nil {

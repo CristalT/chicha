@@ -2,50 +2,31 @@
 import FormInput from './FormInput.vue'
 import Button from './Button.vue'
 import { Article } from '../types';
-import { computed, useTemplateRef, watch, watchEffect } from 'vue';
+import { useTemplateRef, watchEffect } from 'vue';
+import Modal from './Modal.vue';
 
-const props = defineProps<{
+const emit = defineEmits(['addToCart', 'close'])
+
+defineProps<{
     visible: boolean,
 }>()
 
 const qtyInput = useTemplateRef('qty-input')
 
-const emit = defineEmits(['addToCart', 'close'])
-
 const article = defineModel<Article>({ required: true })
-
-const isVisible = computed(() => props.visible)
-
-function closeOnEscKeyPressed(e: KeyboardEvent) {
-    if (e.code === 'Escape') {
-        emit('close')
-    }
-}
-
-function bootListeners(imVisible: boolean) {
-    if (imVisible) {
-        document.addEventListener('keyup', closeOnEscKeyPressed)
-    } else {
-        document.removeEventListener('keyup', closeOnEscKeyPressed)
-    }
-}
-
 
 watchEffect(() => {
     if (qtyInput.value) {
+        // @ts-ignore
         qtyInput.value.focus()
+        // @ts-ignore
         qtyInput.value.select()
     }
 })
 
-watch(isVisible, (val) => {
-    bootListeners(val)
-})
-
-
 </script>
 <template>
-    <div class="modal" v-if="visible" @keypress.esc="emit('close')">
+    <Modal :visible @close="emit('close')">
         <article>
             <header>
                 {{ article.description }}
@@ -54,7 +35,7 @@ watch(isVisible, (val) => {
                 <h3>Código: {{ article.code }}</h3>
                 <h3>Precio: $ {{ article.price }}</h3>
                 <h3>Cantidad:
-                    <FormInput ref="qty-input" v-model="article.qty" @keyup.enter="emit('addToCart', article)" />
+                    <FormInput type="number" ref="qty-input" v-model="article.qty" @keyup.enter="emit('addToCart', article)" />
                 </h3>
             </main>
             <footer>
@@ -62,23 +43,11 @@ watch(isVisible, (val) => {
                 <Button variant="primary" label="Agregar al Carrito" @click="emit('addToCart', article)" />
             </footer>
         </article>
-    </div>
+    </Modal>
 </template>
 
 <style lang="css" scoped>
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal article {
+article {
     position: relative;
     box-shadow: 6px 6px 20px #101010;
     background-color: #fff;

@@ -8,7 +8,7 @@ import FormInput from '../components/FormInput.vue'
 import Button from '../components/Button.vue'
 import useCart from '../composables/useCart'
 import ShowArticleModal from '../components/ShowArticleModal.vue';
-
+import CartModal from '../components/CartModal.vue'
 
 const toast = useToast()
 const { addToCart, total } = useCart()
@@ -21,6 +21,7 @@ const params = reactive({
 })
 const isArticleModalVisible = ref(false)
 const isAddToCartModalVisible = ref(false)
+const isCartModalVisible = ref(false)
 const articleModalTitle = ref('')
 const article = ref<Article>({
   id: 0,
@@ -31,16 +32,10 @@ const article = ref<Article>({
   price: 0
 })
 
-let deb: any
 async function getArticles() {
-  clearTimeout(deb)
-
-  deb = setTimeout(() => {
-
-    GetArticles(params.orderBy, params.orderType, params.terms)
-      .then(response => articles.value = response)
-      .catch((err) => console.log('error', err))
-  }, 1000)
+  GetArticles(params.orderBy, params.orderType, params.terms)
+    .then(response => articles.value = response)
+    .catch((err) => console.log('error', err))
 }
 
 function showAddToCart(item: Article) {
@@ -73,6 +68,7 @@ function setOrderBy(column: string) {
   getArticles()
 }
 function save(article: Article) {
+  // @ts-ignore
   CreateArticle(article).then(() => {
     isArticleModalVisible.value = false
     toast.success('Artículo creado correctamente.')
@@ -91,13 +87,18 @@ function closeArticleModal() {
   isArticleModalVisible.value = false
 }
 
+function onFinishCart() {
+  getArticles()
+  isCartModalVisible.value = false
+}
+
 onMounted(() => {
   getArticles()
 }) 
 </script>
 <template>
   <header>
-    <FormInput v-model="params.terms" placeholder="Buscar ..." @update:modelValue="getArticles" />
+    <FormInput autofocus v-model="params.terms" placeholder="Buscar ..." @update:modelValue="getArticles" />
   </header>
   <main>
     <table>
@@ -135,14 +136,16 @@ onMounted(() => {
     <nav>
       <ul>
         <li>
-          <Button :label="`Carrito: $ ${total}`" />
+          <Button :label="`Carrito: $ ${total}`" @click="isCartModalVisible = true" />
         </li>
       </ul>
     </nav>
 
   </footer>
 
-  <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart" @close="isAddToCartModalVisible = false" /> 
+  <CartModal :visible="isCartModalVisible" @close="isCartModalVisible = false" @finish="onFinishCart" />
+  <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart"
+    @close="isAddToCartModalVisible = false" />
   <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
     @cancel="closeArticleModal" @save="save" />
 </template>
@@ -152,7 +155,7 @@ header {
   position: fixed;
   width: 100%;
   padding: 8px;
-  box-sizing: border-box ;
+  box-sizing: border-box;
 }
 
 main {

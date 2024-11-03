@@ -15,10 +15,12 @@ withDefaults(defineProps<{
 const model = defineModel()
 
 function focus() {
-input.value?.focus()    
+    // @ts-ignore
+    input.value?.focus()    
 }
 
 function select() {
+    // @ts-ignore
     input.value?.select()
 }
 

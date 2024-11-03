@@ -9,3 +9,7 @@ export function CreateArticle(arg1) {
 export function GetArticles(arg1, arg2, arg3) {
   return window['go']['main']['App']['GetArticles'](arg1, arg2, arg3);
 }
+
+export function Sale(arg1) {
+  return window['go']['main']['App']['Sale'](arg1);
+}

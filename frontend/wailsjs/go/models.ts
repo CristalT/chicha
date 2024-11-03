@@ -7,6 +7,7 @@ export namespace main {
 	    stock: number;
 	    fob: number;
 	    price: number;
+	    qty?: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new Article(source);
@@ -20,6 +21,7 @@ export namespace main {
 	        this.stock = source["stock"];
 	        this.fob = source["fob"];
 	        this.price = source["price"];
+	        this.qty = source["qty"];
 	    }
 	}
 

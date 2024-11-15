@@ -5,7 +5,7 @@ import { Article } from '../types';
 import { useTemplateRef, watchEffect } from 'vue';
 import Modal from './Modal.vue';
 
-const emit = defineEmits(['addToCart', 'close'])
+const emit = defineEmits(['addToCart', 'close', 'edit'])
 
 defineProps<{
     visible: boolean,
@@ -14,6 +14,10 @@ defineProps<{
 const qtyInput = useTemplateRef('qty-input')
 
 const article = defineModel<Article>({ required: true })
+
+function edit(article: Article) {
+    emit('edit', article)
+}
 
 watchEffect(() => {
     if (qtyInput.value) {
@@ -26,23 +30,17 @@ watchEffect(() => {
 
 </script>
 <template>
-    <Modal :visible @close="emit('close')">
-        <article>
-            <header>
-                {{ article.description }}
-            </header>
-            <main>
-                <h3>Código: {{ article.code }}</h3>
-                <h3>Precio: $ {{ article.price }}</h3>
-                <h3>Cantidad:
-                    <FormInput type="number" ref="qty-input" v-model="article.qty" @keyup.enter="emit('addToCart', article)" />
-                </h3>
-            </main>
-            <footer>
-                <Button variant="secondary" label="Editar" />
-                <Button variant="primary" label="Agregar al Carrito" @click="emit('addToCart', article)" />
-            </footer>
-        </article>
+    <Modal :visible @close="emit('close')" :title="article.description">
+        <h3>Código: {{ article.code }}</h3>
+        <h3>Precio: $ {{ article.price }}</h3>
+        <h3>Cantidad:
+            <FormInput type="number" ref="qty-input" v-model="article.qty" @keyup.enter="emit('addToCart', article)" />
+        </h3>
+
+        <template #footer>
+            <Button variant="secondary" label="Editar" @click="edit(article)" />
+            <Button variant="primary" label="Agregar al Carrito" @click="emit('addToCart', article)" />
+        </template>
     </Modal>
 </template>
 
@@ -54,26 +52,5 @@ article {
     height: 360px;
     width: 80vw;
     border-radius: 3px;
-}
-
-header {
-    border-bottom: 1px solid #000;
-    padding: 8px;
-    text-align: center;
-}
-
-main {
-    padding: 16px;
-}
-
-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid #000;
-    padding: 8px;
-    justify-content: space-between;
-    display: flex;
-    box-sizing: border-box;
 }
 </style>

@@ -14,7 +14,14 @@ const props = defineProps<{
 
 const emit = defineEmits(['close', 'finish'])
 const isVisible = computed(() => props.visible)
-const items = ref<Record<string, Article>>()
+const items = ref<Record<string, Article>>({})
+
+const total = computed(() => {
+    return Object.values(items.value).reduce((acc: number, item: Article) => {
+        acc += item.price * item.qty!
+        return acc
+    }, 0)
+})
 
 watchEffect(() => {
     if (isVisible.value) {
@@ -29,7 +36,6 @@ function amount(item: Article) {
 function finish() {
     // @ts-ignore
     Sale(Object.values(items.value)).then(() => {
-
         finishCart()
         emit('finish')
     }).catch(console.log)
@@ -37,37 +43,35 @@ function finish() {
 
 </script>
 <template>
-    <Modal :visible @close="emit('close')">
-        <article>
-            <header>
-                Carrito
-            </header>
-            <main>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Descripción</th>
-                            <th>Precio</th>
-                            <th>Cantidad</th>
-                            <th>Importe</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, key) in items" :key>
-                            <td>{{ item.code }}</td>
-                            <td>{{ item.description }}</td>
-                            <td>{{ item.price }}</td>
-                            <td>{{ item.qty }}</td>
-                            <td class="text-right price-cell">{{ amount(item) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </main>
-            <footer style="text-align: right;">
-                <Button label="Finalizar" @click="finish" />
-            </footer>
-        </article>
+    <Modal :visible @close="emit('close')" title="Carrito">
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Importe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, key) in items" :key>
+                    <td>{{ item.code }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.qty }}</td>
+                    <td class="text-right price-cell">{{ amount(item) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <template #footer>
+            <div>
+                Total: <strong>$ {{ total }}</strong>
+            </div>
+            <Button label="Finalizar" @click="finish" />
+        </template>
+
     </Modal>
 </template>
 
@@ -84,27 +88,7 @@ function finish() {
     align-items: center;
 }
 
-.modal article {
-    position: relative;
-    box-shadow: 6px 6px 20px #101010;
-    background-color: #fff;
-    height: 460px;
-    width: 80vw;
-    border-radius: 3px;
-}
-
-main {
-    overflow-y: scroll;
-    height: calc(100% - 100px);
-}
-
-header {
-    border-bottom: 1px solid #000;
-    padding: 8px;
-    text-align: center;
-}
-
-table {
+.modal table {
     & thead {
         position: sticky;
         top: 0;
@@ -116,16 +100,5 @@ table {
         border: 1px solid;
         padding: 4px;
     }
-}
-
-footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid #000;
-    padding: 8px;
-    justify-content: space-between;
-    display: flex;
-    box-sizing: border-box;
 }
 </style>

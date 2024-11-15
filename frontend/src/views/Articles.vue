@@ -92,6 +92,13 @@ function onFinishCart() {
   isCartModalVisible.value = false
 }
 
+function openEdit(item: Article) {
+  article.value = item
+  articleModalTitle.value = 'Editar artículo'
+  isAddToCartModalVisible.value = false
+  isArticleModalVisible.value = true
+}
+
 onMounted(() => {
   getArticles()
 }) 
@@ -144,8 +151,13 @@ onMounted(() => {
   </footer>
 
   <CartModal :visible="isCartModalVisible" @close="isCartModalVisible = false" @finish="onFinishCart" />
-  <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart"
-    @close="isAddToCartModalVisible = false" />
+  <ShowArticleModal 
+    v-model="article" 
+    :visible="isAddToCartModalVisible" 
+    @addToCart="addItemToCart"
+    @close="isAddToCartModalVisible = false" 
+    @edit="openEdit"
+  />
   <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
     @cancel="closeArticleModal" @save="save" />
 </template>

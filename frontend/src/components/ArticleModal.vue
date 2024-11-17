@@ -3,19 +3,30 @@ import FormInput from './FormInput.vue'
 import Button from './Button.vue'
 import Modal from './Modal.vue'
 import { Article } from '../types';
+import { computed, ref, watchEffect } from 'vue';
 
 const emit = defineEmits(['cancel', 'save'])
-defineProps<{
+const props = defineProps<{
     visible: boolean,
     title: string,
 }>()
 
+const codeInput = ref<HTMLInputElement>()
+
 const data = defineModel<Article>({ required: true })
+
+const isVisible = computed(() => props.visible)
+
+watchEffect(() => {
+    if (isVisible) {
+        codeInput.value?.focus()
+    }
+})
 </script>
 <template>
     <Modal :visible @close="emit('cancel')" :title>
         <div class="form">
-            <FormInput label="Código" v-model="data.code" />
+            <FormInput ref="codeInput" label="Código" v-model="data.code" />
             <FormInput label="Descripción" v-model="data.description" />
             <div class="row gap">
                 <FormInput label="Stock" type="number" v-model="data.stock" />

@@ -15,7 +15,6 @@ const { addToCart, total } = useCart()
 
 const articles = ref<Article[]>([])
 const searchInput = ref<HTMLInputElement>()
-const articlesTable = ref<HTMLTableElement>()
 const params = reactive({
   orderBy: 'description',
   orderType: 'asc',
@@ -99,6 +98,7 @@ function addItemToCart(item: Article) {
 
 function closeArticleModal() {
   isArticleModalVisible.value = false
+  getArticles()
 }
 
 function onFinishCart() {
@@ -121,6 +121,8 @@ onMounted(() => {
     
     const isNumber = key >= 48 && key <= 57
     const isLetter = e.code === `Key${e.key.toUpperCase()}`
+
+    if(isArticleModalVisible.value || isAddToCartModalVisible.value || isCartModalVisible.value) return;
 
     if (isLetter || isNumber) { // detects only letters and numbers
       searchInput.value?.focus()

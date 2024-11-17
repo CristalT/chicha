@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CreateArticle, GetArticles } from '../../wailsjs/go/main/App'
+import { CreateArticle, GetArticles, UpdateArticle } from '../../wailsjs/go/main/App'
 import { onMounted, reactive, ref } from 'vue'
 import type { Article } from '../types'
 import ArticleModal from '../components/ArticleModal.vue'
@@ -14,6 +14,8 @@ const toast = useToast()
 const { addToCart, total } = useCart()
 
 const articles = ref<Article[]>([])
+const searchInput = ref<HTMLInputElement>()
+const articlesTable = ref<HTMLTableElement>()
 const params = reactive({
   orderBy: 'description',
   orderType: 'asc',
@@ -68,14 +70,26 @@ function setOrderBy(column: string) {
   getArticles()
 }
 function save(article: Article) {
-  // @ts-ignore
-  CreateArticle(article).then(() => {
-    isArticleModalVisible.value = false
-    toast.success('Artículo creado correctamente.')
-    getArticles()
-  }).catch((err) => {
-    toast.error('Error al crear artículo')
-  })
+  if (article.id) {
+    console.log('updateando!!')
+    // @ts-ignore
+    UpdateArticle(article).then(() => {
+      isArticleModalVisible.value = false
+      toast.success('Artículo guardado correctamente.')
+      getArticles()
+    }).catch((err) => {
+      toast.error('Error al crear artículo')
+    })
+  } else {
+    // @ts-ignore
+    CreateArticle(article).then(() => {
+      isArticleModalVisible.value = false
+      toast.success('Artículo creado correctamente.')
+      getArticles()
+    }).catch((err) => {
+      toast.error('Error al crear artículo')
+    })
+  }
 }
 
 function addItemToCart(item: Article) {
@@ -101,14 +115,26 @@ function openEdit(item: Article) {
 
 onMounted(() => {
   getArticles()
+
+  window.addEventListener('keydown', (e) => {
+    const key = Number(e.key)
+    
+    const isNumber = key >= 48 && key <= 57
+    const isLetter = e.code === `Key${e.key.toUpperCase()}`
+
+    if (isLetter || isNumber) { // detects only letters and numbers
+      searchInput.value?.focus()
+    }
+  })
 }) 
 </script>
 <template>
   <header>
-    <FormInput autofocus v-model="params.terms" placeholder="Buscar ..." @update:modelValue="getArticles" />
+    <FormInput autofocus autocomplete="off" ref="searchInput" v-model="params.terms" placeholder="Buscar ..."
+      @update:modelValue="getArticles" />
   </header>
   <main>
-    <table>
+    <table id="articles-table">
       <thead>
         <tr>
           <th @click="setOrderBy('code')" :class="{ underline: params.orderBy === 'code' }">Código</th>
@@ -151,13 +177,8 @@ onMounted(() => {
   </footer>
 
   <CartModal :visible="isCartModalVisible" @close="isCartModalVisible = false" @finish="onFinishCart" />
-  <ShowArticleModal 
-    v-model="article" 
-    :visible="isAddToCartModalVisible" 
-    @addToCart="addItemToCart"
-    @close="isAddToCartModalVisible = false" 
-    @edit="openEdit"
-  />
+  <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart"
+    @close="isAddToCartModalVisible = false" @edit="openEdit" />
   <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
     @cancel="closeArticleModal" @save="save" />
 </template>

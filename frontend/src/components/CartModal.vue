@@ -41,6 +41,11 @@ function finish() {
     }).catch(console.log)
 }
 
+function cancelCart() {
+    finishCart()
+    emit('close')
+}
+
 </script>
 <template>
     <Modal :visible @close="emit('close')" title="Carrito">
@@ -69,7 +74,10 @@ function finish() {
             <div>
                 Total: <strong>$ {{ total }}</strong>
             </div>
-            <Button label="Finalizar" @click="finish" />
+            <div class="row gap">
+                <Button label="Vaciar" @click="cancelCart" variant="secondary" />
+                <Button label="Finalizar" @click="finish" />
+            </div>
         </template>
 
     </Modal>

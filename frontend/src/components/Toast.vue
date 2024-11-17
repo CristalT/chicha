@@ -7,7 +7,6 @@ const { notifications } = useToast()
 
 <template>
     <Teleport to="body">
-
         <div class="toast">
             <div class="notification" v-for="(notification, key) of notifications" :key="key">
                 {{ notification.message }}

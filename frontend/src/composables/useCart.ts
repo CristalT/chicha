@@ -31,7 +31,6 @@ export default function useCart() {
     }
 
     function finishCart() {
-        
         storeCart({})
         calcTotal(getStoredCart())
     }

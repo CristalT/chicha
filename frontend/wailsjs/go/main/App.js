@@ -13,3 +13,7 @@ export function GetArticles(arg1, arg2, arg3) {
 export function Sale(arg1) {
   return window['go']['main']['App']['Sale'](arg1);
 }
+
+export function UpdateArticle(arg1) {
+  return window['go']['main']['App']['UpdateArticle'](arg1);
+}

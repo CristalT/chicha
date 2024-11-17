@@ -3,6 +3,9 @@ import Toast from './components/Toast.vue'
 import Articles from './views/Articles.vue'
 </script>
 <template>
-  <Toast />
-  <Articles />
+  
+
+    <Toast />
+    <Articles />
+  
 </template>

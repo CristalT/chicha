@@ -40,6 +40,32 @@ func (app *App) CreateArticle(a Article) error {
 	return nil
 }
 
+func (app *App) UpdateArticle(a Article) error {
+	db := GetConnection()
+
+	q := `UPDATE articles SET code = ?, description = ?, stock = ?, fob = ?, price = ? WHERE id = ?;`
+
+	stmt, err := db.Prepare(q)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	r, err := stmt.Exec(a.Code, a.Description, a.Stock, a.Fob, a.Price, a.Id)
+
+	if err != nil {
+		return err
+	}
+
+	if i, err := r.RowsAffected(); err != nil || i != 1 {
+		return errors.New("ERROR al guardar")
+	}
+
+	return nil
+}
+
 func (app *App) Sale(articles []Article) error {
 	db := GetConnection()
 

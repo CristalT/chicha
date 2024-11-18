@@ -70,7 +70,6 @@ function setOrderBy(column: string) {
 }
 function save(article: Article) {
   if (article.id) {
-    console.log('updateando!!')
     // @ts-ignore
     UpdateArticle(article).then(() => {
       isArticleModalVisible.value = false
@@ -86,7 +85,7 @@ function save(article: Article) {
       toast.success('Artículo creado correctamente.')
       getArticles()
     }).catch((err) => {
-      toast.error('Error al crear artículo')
+      toast.error(`Error al crear artículo. ${err}`)
     })
   }
 }

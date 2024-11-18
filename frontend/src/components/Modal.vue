@@ -24,11 +24,10 @@ watch(isVisible, (val) => {
 })
 </script>
 <template>
-
     <div class="modal" v-if="visible">
         <article>
             <header>
-                {{  title }}
+                {{ title }}
             </header>
             <main>
                 <slot></slot>

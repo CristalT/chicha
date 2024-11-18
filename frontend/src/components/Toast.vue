@@ -7,8 +7,8 @@ const { notifications } = useToast()
 
 <template>
     <Teleport to="body">
-        <div class="toast">
-            <div class="notification" v-for="(notification, key) of notifications" :key="key">
+        <div class="toast" v-for="(notification, key) of notifications" :key="key">
+            <div class="notification"  :class="notification.type">
                 {{ notification.message }}
             </div>
         </div>
@@ -31,6 +31,15 @@ const { notifications } = useToast()
     border-radius: 3px;
     box-shadow: 1px 1px 20px rgba(0,0,0,0.5);
     color: white;
-    background-color: green;
+
+    &.error {
+        background-color: rgb(194, 37, 97);
+    }
+    &.success {
+        background-color: rgb(24, 118, 62);
+    }
+    &.warning {
+        background-color: rgb(255, 200, 0);
+    }
 }
 </style>

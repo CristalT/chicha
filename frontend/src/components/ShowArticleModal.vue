@@ -11,7 +11,7 @@ defineProps<{
     visible: boolean,
 }>()
 
-const qtyInput = useTemplateRef('qty-input')
+const qtyInput = useTemplateRef<HTMLInputElement>('qty-input')
 
 const article = defineModel<Article>({ required: true })
 
@@ -20,12 +20,8 @@ function edit(article: Article) {
 }
 
 watchEffect(() => {
-    if (qtyInput.value) {
-        // @ts-ignore
-        qtyInput.value.focus()
-        // @ts-ignore
-        qtyInput.value.select()
-    }
+    qtyInput.value?.focus()
+    qtyInput.value?.select()
 })
 
 </script>
@@ -34,7 +30,7 @@ watchEffect(() => {
         <h3>Código: {{ article.code }}</h3>
         <h3>Precio: $ {{ article.price }}</h3>
         <h3>Cantidad:
-            <FormInput type="number" ref="qty-input" v-model="article.qty" @keyup.enter="emit('addToCart', article)" />
+            <FormInput type="number" ref="qty-input" v-model="article.qty" @keyup.enter.stop="emit('addToCart', article)" />
         </h3>
 
         <template #footer>

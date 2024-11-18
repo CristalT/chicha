@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 )
 
@@ -16,6 +17,17 @@ type Article struct {
 
 func (app *App) CreateArticle(a Article) error {
 	db := GetConnection()
+
+	var existingCode string
+	checkQuery := `SELECT code FROM articles WHERE code = ?`
+	err := db.QueryRow(checkQuery, a.Code).Scan(&existingCode)
+
+	// If the code already exists, return an error
+	if err == nil {
+		return errors.New("El código que intenta crear ya existe")
+	} else if err != sql.ErrNoRows {
+		return err
+	}
 
 	q := `INSERT INTO articles (code, description, stock, fob, price) VALUES (?, ?, ?, ?, ?)`
 

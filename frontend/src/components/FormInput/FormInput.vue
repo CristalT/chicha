@@ -38,7 +38,7 @@ defineExpose({ focus, select })
 <template>
     <div class="form-control">
         <label>
-            <div v-if="label">
+            <div class="label" v-if="label">
                 {{ label }}
             </div>
             <input ref="input" :type v-model="value" :placeholder v-bind="$attrs" />

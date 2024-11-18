@@ -4,7 +4,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import type { Article } from '../types'
 import ArticleModal from '../components/ArticleModal.vue'
 import useToast from '../composables/useToast';
-import FormInput from '../components/FormInput.vue'
+import FormInput from '../components/FormInput'
 import Button from '../components/Button.vue'
 import useCart from '../composables/useCart'
 import ShowArticleModal from '../components/ShowArticleModal.vue';

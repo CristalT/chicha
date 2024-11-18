@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FormInput from './FormInput.vue'
+import FormInput from './FormInput'
 import Button from './Button.vue'
 import Modal from './Modal.vue'
 import { Article } from '../types';

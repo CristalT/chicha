@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FormInput from './FormInput.vue'
+import FormInput from './FormInput'
 import Button from './Button.vue'
 import { Article } from '../types';
 import { useTemplateRef, watchEffect } from 'vue';

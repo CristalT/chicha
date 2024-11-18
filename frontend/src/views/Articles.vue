@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CreateArticle, GetArticles, UpdateArticle } from '../../wailsjs/go/main/App'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import type { Article } from '../types'
 import ArticleModal from '../components/ArticleModal.vue'
 import useToast from '../composables/useToast';
@@ -34,6 +34,8 @@ const article = ref<Article>({
   fob: 0,
   price: 0
 })
+
+const someModalIsVisible = computed(() => isArticleModalVisible.value || isAddToCartModalVisible.value || isCartModalVisible.value);
 
 async function getArticles() {
   currentRowIndex = 0
@@ -118,38 +120,21 @@ function openEdit(item: Article) {
 }
 
 onMounted(() => {
+  // table navigation throw keyboard arrows
+  const table = document.getElementById('articles-table')
+  const rows = table?.getElementsByTagName('tr')!
 
-  function onEnter(e: KeyboardEvent) {
-    if (e.key === 'Enter') {
+  window.addEventListener('keyup', (e) => {
+    if (someModalIsVisible.value) return;
+    e.preventDefault()
+    if (e.key === "ArrowDown" && currentRowIndex < rows.length - 1) {
+        currentRowIndex++;
+    } else if (e.key === "ArrowUp" && currentRowIndex > 1) {
+        currentRowIndex--;
+    } else if (e.key === 'Enter') {
       const article = articles.value[currentRowIndex - 1];
-
       if (article) {
         showAddToCart(article)
-      }
-    }
-  }
-
-  function onKey(e: KeyboardEvent) {
-    const key = Number(e.key)
-
-    const isNumber = key >= 48 && key <= 57
-    const isLetter = e.code === `Key${e.key.toUpperCase()}`
-    const table = document.getElementById('articles-table')
-    const rows = table?.getElementsByTagName('tr')!
-
-    if (isArticleModalVisible.value || isAddToCartModalVisible.value || isCartModalVisible.value) return;
-
-    if (isLetter || isNumber) { // detects only letters and numbers
-      searchInput.value?.focus()
-    } else if (e.key === "ArrowDown") {
-      // Move down, ensure we don't go past the last row
-      if (currentRowIndex < rows.length - 1) {
-        currentRowIndex++;
-      }
-    } else if (e.key === "ArrowUp") {
-      // Move up, ensure we don't go before the first row
-      if (currentRowIndex > 1) { // Exclude the header row (index 0)
-        currentRowIndex--;
       }
     }
 
@@ -162,15 +147,24 @@ onMounted(() => {
     if (currentRowIndex >= 1 && currentRowIndex < rows.length) {
       rows[currentRowIndex].style.backgroundColor = '#fea7f8'; // Highlight color
     }
+  })
 
-  }
+  // autofocus search input writing something
+  window.addEventListener('keydown', (e: KeyboardEvent) => {
+    const key = Number(e.key)
 
-  window.addEventListener('keyup', onEnter)
+    const isNumber = key >= 48 && key <= 57
+    const isLetter = e.code === `Key${e.key.toUpperCase()}`
 
-  window.addEventListener('keydown', onKey)
+
+    if (someModalIsVisible.value) return;
+
+    if (isLetter || isNumber) { // detects only letters and numbers
+      searchInput.value?.focus()
+    }
+  })
 
   getArticles()
-
 })
 </script>
 <template>

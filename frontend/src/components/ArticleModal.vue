@@ -31,13 +31,13 @@ watchEffect(() => {
             <div class="row gap">
                 <FormInput label="Stock" type="number" v-model="data.stock" />
                 <FormInput label="Costo" type="number" v-model="data.fob" />
-                <FormInput label="Precio" type="number" v-model="data.price" />
+                <FormInput label="Precio" type="number" v-model="data.price" @keypress.enter.stop="$emit('save', data)" />
             </div>
         </div>
 
         <template #footer>
             <Button label="Cancelar" variant="secondary" @click="$emit('cancel')" />
-            <Button label="Guardar" @click="$emit('save', data)" />
+            <Button type="submit" label="Guardar" @click="$emit('save', data)" />
         </template>
     </Modal>
 

@@ -13,6 +13,8 @@ import CartModal from '../components/CartModal.vue'
 const toast = useToast()
 const { addToCart, total } = useCart()
 
+let currentRowIndex = 0
+
 const articles = ref<Article[]>([])
 const searchInput = ref<HTMLInputElement>()
 const params = reactive({
@@ -34,7 +36,8 @@ const article = ref<Article>({
 })
 
 async function getArticles() {
-  GetArticles(params.orderBy, params.orderType, params.terms)
+  currentRowIndex = 0
+  await GetArticles(params.orderBy, params.orderType, params.terms)
     .then(response => articles.value = response)
     .catch((err) => console.log('error', err))
 }
@@ -93,6 +96,8 @@ function save(article: Article) {
 function addItemToCart(item: Article) {
   addToCart(item)
   isAddToCartModalVisible.value = false
+  searchInput.value?.focus()
+  searchInput.value?.select()
 }
 
 function closeArticleModal() {
@@ -113,21 +118,60 @@ function openEdit(item: Article) {
 }
 
 onMounted(() => {
-  getArticles()
 
-  window.addEventListener('keydown', (e) => {
+  function onEnter(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      const article = articles.value[currentRowIndex - 1];
+
+      if (article) {
+        showAddToCart(article)
+      }
+    }
+  }
+
+  function onKey(e: KeyboardEvent) {
     const key = Number(e.key)
-    
+
     const isNumber = key >= 48 && key <= 57
     const isLetter = e.code === `Key${e.key.toUpperCase()}`
+    const table = document.getElementById('articles-table')
+    const rows = table?.getElementsByTagName('tr')!
 
-    if(isArticleModalVisible.value || isAddToCartModalVisible.value || isCartModalVisible.value) return;
+    if (isArticleModalVisible.value || isAddToCartModalVisible.value || isCartModalVisible.value) return;
 
     if (isLetter || isNumber) { // detects only letters and numbers
       searchInput.value?.focus()
+    } else if (e.key === "ArrowDown") {
+      // Move down, ensure we don't go past the last row
+      if (currentRowIndex < rows.length - 1) {
+        currentRowIndex++;
+      }
+    } else if (e.key === "ArrowUp") {
+      // Move up, ensure we don't go before the first row
+      if (currentRowIndex > 1) { // Exclude the header row (index 0)
+        currentRowIndex--;
+      }
     }
-  })
-}) 
+
+    // Remove highlight from all rows
+    for (let i = 1; i < rows.length; i++) {
+      rows[i].style.backgroundColor = ''; // Clear the background color
+    }
+
+    // Highlight the current row
+    if (currentRowIndex >= 1 && currentRowIndex < rows.length) {
+      rows[currentRowIndex].style.backgroundColor = '#fea7f8'; // Highlight color
+    }
+
+  }
+
+  window.addEventListener('keyup', onEnter)
+
+  window.addEventListener('keydown', onKey)
+
+  getArticles()
+
+})
 </script>
 <template>
   <header>

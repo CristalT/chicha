@@ -27,7 +27,7 @@ func createArticlesTable() error {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             code VARCHAR(30) NOT NULL,
             description VARCHAR(200) NOT NULL,
-            stock INTEGER DEFAULT 0 NOT NULL,
+            stock FLOAT DEFAULT 0 NOT NULL,
 			fob FLOAT DEFAULT 0 NOT NULL,
 			price FLOAT DEFAULT 0 NOT NULL
          );`
@@ -46,7 +46,7 @@ func createSalesTable() error {
             description VARCHAR(200) NOT NULL,
 			fob FLOAT DEFAULT 0 NOT NULL,
 			price FLOAT DEFAULT 0 NOT NULL,
-			qty INTEGER DEFAULT 0 NOT NULL,
+			qty FLOAT DEFAULT 0 NOT NULL,
 			date DATETIME DEFAULT CURRENT_TIMESTAMP
          );`
 	_, err := db.Exec(q)

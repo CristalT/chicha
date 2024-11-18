@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
+import { computed, useTemplateRef } from 'vue';
 
 const input  = useTemplateRef('input')
 withDefaults(defineProps<{
@@ -13,6 +13,15 @@ withDefaults(defineProps<{
 })
 
 const model = defineModel()
+
+const value = computed({
+    get() {
+        return model.value
+    },
+    set(value) {
+        model.value = typeof value === 'number' ? value : String(value).toUpperCase()
+    }
+})
 
 function focus() {
     // @ts-ignore
@@ -32,7 +41,7 @@ defineExpose({ focus, select })
             <div v-if="label">
                 {{ label }}
             </div>
-            <input ref="input" :type v-model="model" :placeholder v-bind="$attrs" />
+            <input ref="input" :type v-model="value" :placeholder v-bind="$attrs" />
         </label>
     </div>
 </template>

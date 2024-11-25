@@ -1,10 +1,5 @@
 package main
 
-import (
-	"database/sql"
-	"errors"
-)
-
 type Article struct {
 	Id          int64   `json:"id"`
 	Code        string  `json:"code"`
@@ -17,135 +12,20 @@ type Article struct {
 
 func (app *App) CreateArticle(a Article) error {
 	db := GetConnection()
-
-	var existingCode string
-	checkQuery := `SELECT code FROM articles WHERE code = ?`
-	err := db.QueryRow(checkQuery, a.Code).Scan(&existingCode)
-
-	// If the code already exists, return an error
-	if err == nil {
-		return errors.New("El código que intenta crear ya existe")
-	} else if err != sql.ErrNoRows {
-		return err
-	}
-
-	q := `INSERT INTO articles (code, description, stock, fob, price) VALUES (?, ?, ?, ?, ?)`
-
-	stmt, err := db.Prepare(q)
-
-	if err != nil {
-		return err
-	}
-
-	defer stmt.Close()
-
-	r, err := stmt.Exec(a.Code, a.Description, a.Stock, a.Fob, a.Price)
-
-	if err != nil {
-		return err
-	}
-
-	if i, err := r.RowsAffected(); err != nil || i != 1 {
-		return errors.New("ERROR al guardar")
-	}
-
-	return nil
+	return db.Create(&a).Error
 }
 
 func (app *App) UpdateArticle(a Article) error {
 	db := GetConnection()
-
-	q := `UPDATE articles SET code = ?, description = ?, stock = ?, fob = ?, price = ? WHERE id = ?;`
-
-	stmt, err := db.Prepare(q)
-
-	if err != nil {
-		return err
-	}
-
-	defer stmt.Close()
-
-	r, err := stmt.Exec(a.Code, a.Description, a.Stock, a.Fob, a.Price, a.Id)
-
-	if err != nil {
-		return err
-	}
-
-	if i, err := r.RowsAffected(); err != nil || i != 1 {
-		return errors.New("ERROR al guardar")
-	}
-
-	return nil
-}
-
-func (app *App) Sale(articles []Article) error {
-	db := GetConnection()
-
-	insertSQL := `INSERT INTO sales (code, description, fob, price, qty) VALUES (?, ?, ?, ?, ?)`
-	insertSaleStmt, err := db.Prepare(insertSQL)
-	if err != nil {
-		return err
-	}
-	defer insertSaleStmt.Close()
-
-	updateStockSQL := `UPDATE articles SET stock = (stock - ?) WHERE id = ?`
-	updateStockStmt, err := db.Prepare(updateStockSQL)
-	if err != nil {
-		return err
-	}
-	defer updateStockStmt.Close()
-
-	for _, article := range articles {
-		if _, err := insertSaleStmt.Exec(article.Code, article.Description, article.Fob, article.Price, article.Qty); err != nil {
-			return err
-		}
-
-		if _, err := updateStockStmt.Exec(article.Qty, article.Id); err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return db.Save(&a).Error
 }
 
 func (app *App) GetArticles(orderBy string, orderType string, terms string) ([]Article, error) {
-
 	db := GetConnection()
-
-	var query string
-
-	if terms == "" {
-		query = "SELECT * FROM articles ORDER BY " + orderBy + " " + orderType
-	} else {
-		query = "SELECT * FROM articles WHERE code = '" + terms + "' OR description LIKE '%" + terms + "%' ORDER BY " + orderBy + " " + orderType
+	db.Order(orderBy + " " + orderType)
+	if terms != "" {
+		db.Where("code = ? OR description LIKE ?", terms, "%"+terms+"%")
 	}
-
-	rows, err := db.Query(query)
-
-	if err != nil {
-		return []Article{}, err
-	}
-
-	defer rows.Close()
-
-	articles := []Article{}
-
-	for rows.Next() {
-		var a Article
-
-		if err := rows.Scan(
-			&a.Id,
-			&a.Code,
-			&a.Description,
-			&a.Stock,
-			&a.Fob,
-			&a.Price,
-		); err != nil {
-			return articles, err
-		}
-
-		articles = append(articles, a)
-	}
-
-	return articles, nil
+	var articles []Article
+	return articles, db.Find(&articles).Error
 }

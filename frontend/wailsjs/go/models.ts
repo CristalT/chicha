@@ -24,6 +24,28 @@ export namespace main {
 	        this.qty = source["qty"];
 	    }
 	}
+	export class Sale {
+	    Id: number;
+	    Code: string;
+	    Description: string;
+	    Fob: number;
+	    Price: number;
+	    Qty: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new Sale(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Id = source["Id"];
+	        this.Code = source["Code"];
+	        this.Description = source["Description"];
+	        this.Fob = source["Fob"];
+	        this.Price = source["Price"];
+	        this.Qty = source["Qty"];
+	    }
+	}
 
 }
 

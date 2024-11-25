@@ -7,6 +7,8 @@ toolchain go1.21.0
 require (
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/wailsapp/wails/v2 v2.9.2
+	gorm.io/driver/sqlite v1.5.6
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -15,6 +17,8 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jchv/go-winloader v0.0.0-20210711035445-715c2860da7e // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/labstack/echo/v4 v4.10.2 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/leaanthony/go-ansi-parser v1.6.0 // indirect
@@ -36,7 +40,7 @@ require (
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 )
 
 // replace github.com/wailsapp/wails/v2 v2.9.2 => /Users/marcelo.forclaz/go/pkg/mod

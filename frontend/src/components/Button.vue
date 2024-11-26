@@ -1,7 +1,7 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
     label: string,
-    variant?: 'primary' | 'secondary'
+    variant?: 'primary' | 'secondary' | 'tertiary'
 }>(), { variant: 'primary' })
 </script>
 
@@ -34,5 +34,13 @@ button {
 
 .secondary:hover {
     background-color: #571e71; 
+}
+
+.tertiary {
+    background-color: #fff;
+    color: #3f1055;
+}
+.tertiary:hover {
+    background-color: #ccc;
 }
 </style>

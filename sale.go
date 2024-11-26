@@ -1,12 +1,12 @@
 package main
 
 type Sale struct {
-	Id          int
-	Code        string
-	Description string
-	Fob         float64
-	Price       float64
-	Qty         float64
+	Id          int     `json:"id"`
+	Code        string  `json:"code"`
+	Description string  `json:"description"`
+	Fob         float64 `json:"fob"`
+	Price       float64 `json:"price"`
+	Qty         float64 `json:"qty,omitempty"`
 }
 
 func (app *App) Sale(sales []Sale) error {

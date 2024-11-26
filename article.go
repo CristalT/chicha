@@ -7,7 +7,6 @@ type Article struct {
 	Stock       int     `json:"stock"`
 	Fob         float32 `json:"fob"`
 	Price       float32 `json:"price"`
-	Qty         *int    `json:"qty,omitempty"`
 }
 
 func (app *App) CreateArticle(a Article) error {

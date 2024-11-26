@@ -6,7 +6,9 @@ import { main } from '../../wailsjs/go/models'
 import { computed, ref } from 'vue';
 import Layout from '../components/Layout.vue';
 import { Sale } from '../../wailsjs/go/main/App';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 
 const { getStoredCart } = useCart()
 
@@ -17,13 +19,13 @@ const items = ref<Record<string, main.Sale>>({})
 
 const total = computed(() => {
     return Object.values(items.value).reduce((acc: number, item: main.Sale) => {
-        acc += item.Price * item.Qty!
+        acc += item.price * item.qty!
         return acc
     }, 0)
 })
 
 function amount(item: main.Sale) {
-    return item.Price * item.Qty!
+    return item.price * item.qty!
 }
 
 function finish() {
@@ -33,9 +35,9 @@ function finish() {
     }).catch(console.log)
 }
 
-function cancelCart() {
+function emptyCart() {
     finishCart()
-    emit('close')
+    router.push({ name: 'articles' })
 }
 
 items.value = getStoredCart()
@@ -60,10 +62,10 @@ items.value = getStoredCart()
             </thead>
             <tbody>
                 <tr v-for="(item, key) in items" :key>
-                    <td>{{ item.Code }}</td>
-                    <td>{{ item.Description }}</td>
-                    <td class="text-right price">{{ item.Price }}</td>
-                    <td class="text-center">{{ item.Qty }}</td>
+                    <td>{{ item.code }}</td>
+                    <td>{{ item.description }}</td>
+                    <td class="text-right price">{{ item.price }}</td>
+                    <td class="text-center">{{ item.qty }}</td>
                     <td class="text-right price">{{ amount(item) }}</td>
                 </tr>
             </tbody>
@@ -74,9 +76,9 @@ items.value = getStoredCart()
                 Total: <strong>$ {{ total }}</strong>
             </div>
             <div class="row gap">
-                <Button label="Volver" variant="secondary" @click="$router.push({ name: 'articles' })" />
+                <Button label="Volver" variant="tertiary" @click="$router.push({ name: 'articles' })" />
 
-                <Button label="Vaciar" @click="cancelCart" variant="secondary" />
+                <Button label="Vaciar" @click="emptyCart" variant="secondary" />
                 <Button label="Finalizar" @click="finish" />
             </div>
         </template>

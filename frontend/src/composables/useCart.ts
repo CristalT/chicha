@@ -6,18 +6,18 @@ const total = ref(0)
 export default function useCart() {
     const toast = useToast()
 
-    function getStoredCart(): Record<string, main.Sale> {
+    function getStoredCart(): Record<string, main.Article> {
         const storedCart = localStorage.getItem('cart')
         return storedCart ? JSON.parse(storedCart) : {}
     }
 
-    function storeCart(cart: Record<string, main.Sale>) {
+    function storeCart(cart: Record<string, main.Article>) {
         localStorage.setItem('cart', JSON.stringify(cart))
     }
 
-    function addToCart(item: main.Sale) {
+    function addToCart(item: main.Article) {
         const cart = getStoredCart()
-        cart[item.Id] = item
+        cart[item.id] = item
         storeCart(cart)
         calcTotal(cart)
         toast.success('Artículo agregado al carrito.')

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import useCart from '../composables/useCart';
-import Button from './Button.vue'
-import Modal from './Modal.vue'
-import { computed, ref, watchEffect } from 'vue';
+import Button from '../components/Button.vue'
+
+import { main } from '../../wailsjs/go/models'
+import { computed, ref } from 'vue';
+import Layout from '../components/Layout.vue';
 import { Sale } from '../../wailsjs/go/main/App';
-import { main } from '../../wailsjs/go/models';
 
-const { getStoredCart, finishCart } = useCart()
 
-const props = defineProps<{
-    visible: boolean
-}>()
+const { getStoredCart } = useCart()
+
+const { finishCart } = useCart()
 
 const emit = defineEmits(['close', 'finish'])
-const isVisible = computed(() => props.visible)
 const items = ref<Record<string, main.Sale>>({})
 
 const total = computed(() => {
@@ -21,12 +20,6 @@ const total = computed(() => {
         acc += item.Price * item.Qty!
         return acc
     }, 0)
-})
-
-watchEffect(() => {
-    if (isVisible.value) {
-        items.value = getStoredCart()
-    }
 })
 
 function amount(item: main.Sale) {
@@ -45,9 +38,16 @@ function cancelCart() {
     emit('close')
 }
 
+items.value = getStoredCart()
+
 </script>
 <template>
-    <Modal :visible @close="emit('close')" title="Carrito">
+    <Layout>
+        <template #header>
+            <div class="title">
+                Memo de venta
+            </div>
+        </template>
         <table>
             <thead>
                 <tr>
@@ -62,50 +62,32 @@ function cancelCart() {
                 <tr v-for="(item, key) in items" :key>
                     <td>{{ item.Code }}</td>
                     <td>{{ item.Description }}</td>
-                    <td>{{ item.Price }}</td>
-                    <td>{{ item.Qty }}</td>
-                    <td class="text-right price-cell">{{ amount(item) }}</td>
+                    <td class="text-right price">{{ item.Price }}</td>
+                    <td class="text-center">{{ item.Qty }}</td>
+                    <td class="text-right price">{{ amount(item) }}</td>
                 </tr>
             </tbody>
         </table>
-
         <template #footer>
+
             <div>
                 Total: <strong>$ {{ total }}</strong>
             </div>
             <div class="row gap">
+                <Button label="Volver" variant="secondary" @click="$router.push({ name: 'articles' })" />
+
                 <Button label="Vaciar" @click="cancelCart" variant="secondary" />
                 <Button label="Finalizar" @click="finish" />
             </div>
         </template>
-
-    </Modal>
+    </Layout>
 </template>
 
 <style lang="css" scoped>
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal table {
-    & thead {
-        position: sticky;
-        top: 0;
-        background-color: #b31e8b;
-        color: #fff
-    }
-
-    & tbody tr td {
-        border: 1px solid;
-        padding: 4px;
-    }
+.title {
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--secondary-color);
+    padding: 8px;
 }
 </style>

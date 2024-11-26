@@ -2,8 +2,8 @@
 import FormInput from './FormInput'
 import Button from './Button.vue'
 import Modal from './Modal.vue'
-import { Article } from '../types';
 import { computed, ref, watchEffect } from 'vue';
+import { main } from '../../wailsjs/go/models';
 
 const emit = defineEmits(['cancel', 'save'])
 const props = defineProps<{
@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const codeInput = ref<HTMLInputElement>()
 
-const data = defineModel<Article>({ required: true })
+const data = defineModel<main.Article>({ required: true })
 
 const isVisible = computed(() => props.visible)
 

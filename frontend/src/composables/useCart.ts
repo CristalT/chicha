@@ -1,23 +1,23 @@
 import { onMounted, ref } from "vue"
 import useToast from "./useToast"
-import { Article } from "../types"
+import { main } from "../../wailsjs/go/models"
 
 const total = ref(0)
 export default function useCart() {
     const toast = useToast()
 
-    function getStoredCart(): Record<string, Article> {
+    function getStoredCart(): Record<string, main.Sale> {
         const storedCart = localStorage.getItem('cart')
         return storedCart ? JSON.parse(storedCart) : {}
     }
 
-    function storeCart(cart: Record<string, Article>) {
+    function storeCart(cart: Record<string, main.Sale>) {
         localStorage.setItem('cart', JSON.stringify(cart))
     }
 
-    function addToCart(item: Article) {
+    function addToCart(item: main.Sale) {
         const cart = getStoredCart()
-        cart[item.id] = item
+        cart[item.Id] = item
         storeCart(cart)
         calcTotal(cart)
         toast.success('Artículo agregado al carrito.')

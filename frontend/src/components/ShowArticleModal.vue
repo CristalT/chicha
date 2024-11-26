@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import FormInput from './FormInput'
 import Button from './Button.vue'
-import { Article } from '../types';
 import { useTemplateRef, watchEffect } from 'vue';
 import Modal from './Modal.vue';
+import { main } from '../../wailsjs/go/models';
 
 const emit = defineEmits(['addToCart', 'close', 'edit'])
 
@@ -13,9 +13,9 @@ defineProps<{
 
 const qtyInput = useTemplateRef<HTMLInputElement>('qty-input')
 
-const article = defineModel<Article>({ required: true })
+const article = defineModel<main.Article>({ required: true })
 
-function edit(article: Article) {
+function edit(article: main.Article) {
     emit('edit', article)
 }
 

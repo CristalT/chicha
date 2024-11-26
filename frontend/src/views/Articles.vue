@@ -1,21 +1,22 @@
 <script setup lang="ts">
 import { CreateArticle, GetArticles, UpdateArticle } from '../../wailsjs/go/main/App'
 import { computed, onMounted, reactive, ref } from 'vue'
-import type { Article } from '../types'
 import ArticleModal from '../components/ArticleModal.vue'
 import useToast from '../composables/useToast';
 import FormInput from '../components/FormInput'
 import Button from '../components/Button.vue'
 import useCart from '../composables/useCart'
 import ShowArticleModal from '../components/ShowArticleModal.vue';
-import CartModal from '../components/CartModal.vue'
+import Layout from '../components/Layout.vue'
+import { main } from '../../wailsjs/go/models';
+
 
 const toast = useToast()
 const { addToCart, total } = useCart()
 
 let currentRowIndex = 0
 
-const articles = ref<Article[]>([])
+const articles = ref<main.Article[]>([])
 const searchInput = ref<HTMLInputElement>()
 const params = reactive({
   orderBy: 'description',
@@ -24,9 +25,8 @@ const params = reactive({
 })
 const isArticleModalVisible = ref(false)
 const isAddToCartModalVisible = ref(false)
-const isCartModalVisible = ref(false)
 const articleModalTitle = ref('')
-const article = ref<Article>({
+const article = ref<main.Article>({
   id: 0,
   code: '',
   description: '',
@@ -35,7 +35,7 @@ const article = ref<Article>({
   price: 0
 })
 
-const someModalIsVisible = computed(() => isArticleModalVisible.value || isAddToCartModalVisible.value || isCartModalVisible.value);
+const someModalIsVisible = computed(() => isArticleModalVisible.value || isAddToCartModalVisible.value);
 
 async function getArticles() {
   currentRowIndex = 0
@@ -44,7 +44,7 @@ async function getArticles() {
     .catch((err) => console.log('error', err))
 }
 
-function showAddToCart(item: Article) {
+function showAddToCart(item: main.Article) {
   isAddToCartModalVisible.value = true
   article.value = item
   article.value.qty = 1
@@ -73,9 +73,8 @@ function setOrderBy(column: string) {
 
   getArticles()
 }
-function save(article: Article) {
+function save(article: main.Article) {
   if (article.id) {
-    // @ts-ignore
     UpdateArticle(article).then(() => {
       isArticleModalVisible.value = false
       toast.success('Artículo guardado correctamente.')
@@ -84,7 +83,6 @@ function save(article: Article) {
       toast.error('Error al crear artículo')
     })
   } else {
-    // @ts-ignore
     CreateArticle(article).then(() => {
       isArticleModalVisible.value = false
       toast.success('Artículo creado correctamente.')
@@ -95,7 +93,7 @@ function save(article: Article) {
   }
 }
 
-function addItemToCart(item: Article) {
+function addItemToCart(item: main.Sale) {
   addToCart(item)
   isAddToCartModalVisible.value = false
   searchInput.value?.focus()
@@ -107,12 +105,7 @@ function closeArticleModal() {
   getArticles()
 }
 
-function onFinishCart() {
-  getArticles()
-  isCartModalVisible.value = false
-}
-
-function openEdit(item: Article) {
+function openEdit(item: main.Article) {
   article.value = item
   articleModalTitle.value = 'Editar artículo'
   isAddToCartModalVisible.value = false
@@ -128,9 +121,9 @@ onMounted(() => {
     if (someModalIsVisible.value) return;
     e.preventDefault()
     if (e.key === "ArrowDown" && currentRowIndex < rows.length - 1) {
-        currentRowIndex++;
+      currentRowIndex++;
     } else if (e.key === "ArrowUp" && currentRowIndex > 1) {
-        currentRowIndex--;
+      currentRowIndex--;
     } else if (e.key === 'Enter') {
       const article = articles.value[currentRowIndex - 1];
       if (article) {
@@ -168,11 +161,14 @@ onMounted(() => {
 })
 </script>
 <template>
-  <header>
-    <FormInput autofocus autocomplete="off" ref="searchInput" v-model="params.terms" placeholder="Buscar ..."
-      @update:modelValue="getArticles" />
-  </header>
-  <main>
+  <Layout>
+    <template #header>
+      <div class="search-box">
+
+        <FormInput autofocus autocomplete="off" ref="searchInput" v-model="params.terms" placeholder="Buscar ..."
+          @update:modelValue="getArticles" />
+      </div>
+    </template>
     <table id="articles-table">
       <thead>
         <tr>
@@ -192,30 +188,25 @@ onMounted(() => {
         </tr>
       </tbody>
     </table>
-  </main>
+
+    <template #footer>
+
+      <div>
+
+        <Button variant="secondary" label="Nuevo Artículo" @click="newArticle" />
+      </div>
+
+      <div>
+
+        <Button :label="`Memo de Venta: $ ${total}`" @click="$router.push({ name: 'sale' })" />
+      </div>
+      
+
+    </template>
+
+  </Layout>
 
 
-  <footer>
-    <nav>
-      <ul>
-        <li>
-
-          <Button variant="secondary" label="Nuevo Artículo" @click="newArticle" />
-        </li>
-
-      </ul>
-    </nav>
-    <nav>
-      <ul>
-        <li>
-          <Button :label="`Carrito: $ ${total}`" @click="isCartModalVisible = true" />
-        </li>
-      </ul>
-    </nav>
-
-  </footer>
-
-  <CartModal :visible="isCartModalVisible" @close="isCartModalVisible = false" @finish="onFinishCart" />
   <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart"
     @close="isAddToCartModalVisible = false" @edit="openEdit" />
   <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
@@ -223,84 +214,24 @@ onMounted(() => {
 </template>
 
 <style lang="css" scoped>
-header {
-  position: fixed;
+.search-box {
   width: 100%;
+  display: flex;
+  justify-content: center;
   padding: 8px;
   box-sizing: border-box;
 }
 
-main {
-  top: 65px;
-  overflow-y: scroll;
-  height: calc(100vh - 130px);
-  position: fixed;
-  width: 100%;
-}
-
-table thead {
-  position: sticky;
-  top: 0;
-  background-color: #3f1055;
-  color: #fff;
-  z-index: 10;
-
-  & tr th {
-    padding: 8px;
-
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-}
-
-table tbody tr {
-  cursor: pointer;
-  transition: all .1s ease;
-
-  &:hover {
-    background-color: #ccc;
-  }
-
-  & td {
-    border: 1px solid #aaa;
-    padding: 8px;
-    position: relative;
-
-    &.price::before {
-      content: '$';
-      position: absolute;
-      left: 10px;
-    }
-  }
-}
-
-
-footer {
-  background-color: #fff;
+nav {
   display: flex;
-  align-items: center;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  justify-content: space-between;
+  justify-content: right;
 
-  & nav {
-    padding: 8px;
+  & ul {
     display: flex;
-    justify-content: right;
-    position: sticky;
-    top: 0;
-
-    & ul {
-      display: flex;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      gap: 8px;
-    }
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 8px;
   }
 }
 </style>

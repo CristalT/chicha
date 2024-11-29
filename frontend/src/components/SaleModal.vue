@@ -31,7 +31,7 @@ watchEffect(() => {
         <h3>Código: {{ article.code }}</h3>
         <h3>Precio: $ {{ article.price }}</h3>
         <h3>Cantidad:
-            <FormInput type="number" ref="qty-input" v-model="qty" @keyup.enter.stop="emit('addToCart', article)" />
+            <FormInput type="number" ref="qty-input" v-model="qty" @keyup.enter.stop="emit('addToCart', {article, qty})" />
         </h3>
 
         <template #footer>

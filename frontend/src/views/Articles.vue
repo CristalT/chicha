@@ -9,6 +9,7 @@ import useCart from '../composables/useCart'
 import SaleModal from '../components/SaleModal.vue';
 import Layout from '../components/Layout.vue';
 import { main } from '../../wailsjs/go/models';
+import { CartIcon, AddIcon } from '../components/Icons';
 
 
 const toast = useToast()
@@ -216,12 +217,16 @@ onMounted(() => {
 
       <div>
 
-        <Button variant="secondary" label="Nuevo Artículo" @click="newArticle" />
+        <Button variant="secondary" @click="newArticle">
+          <AddIcon /> Nuevo artículo
+        </Button>
       </div>
 
       <div>
 
-        <Button :label="`Memo de Venta: $ ${total}`" @click="$router.push({ name: 'sale' })" />
+        <Button @click="$router.push({ name: 'sale' })">
+          <CartIcon /> Carrito: $ {{ total }}
+        </Button>
       </div>
 
     </template>

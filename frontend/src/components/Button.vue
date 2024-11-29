@@ -1,12 +1,15 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-    label: string,
+    label?: string,
     variant?: 'primary' | 'secondary' | 'tertiary'
 }>(), { variant: 'primary' })
 </script>
 
 <template>
-    <button :class="variant">{{ label }}</button>
+    <button :class="variant">
+        <slot v-if="!label"></slot>
+        <span v-else>{{ label }}</span>
+    </button>
 </template>
 
 <style lang="css" scoped>
@@ -17,6 +20,10 @@ button {
     border-radius: 3px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
 .primary {
@@ -25,7 +32,7 @@ button {
 }
 
 .primary:hover {
-    background-color: #c735a0; 
+    background-color: #c735a0;
 }
 
 .secondary {
@@ -34,13 +41,14 @@ button {
 }
 
 .secondary:hover {
-    background-color: #571e71; 
+    background-color: #571e71;
 }
 
 .tertiary {
     background-color: transparent;
     color: var(--secondary-color);
 }
+
 .tertiary:hover {
     background-color: rgba(81, 23, 139, 0.2);
 

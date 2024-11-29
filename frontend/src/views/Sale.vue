@@ -7,6 +7,9 @@ import { computed, ref } from 'vue';
 import Layout from '../components/Layout.vue';
 import { Sale } from '../../wailsjs/go/main/App';
 import { useRouter } from 'vue-router';
+import { DeleteIcon, EditIcon, CheckIcon } from '../components/Icons';
+import FormInput from '../components/FormInput';
+
 
 const router = useRouter()
 
@@ -16,12 +19,17 @@ const { finishCart, removeFromCart } = useCart()
 
 const emit = defineEmits(['close', 'finish'])
 const items = ref<Record<string, main.Sale>>({})
+const isEditing = ref<number>();
 
 const total = computed(() => {
     return Object.values(items.value).reduce((acc: number, item: main.Sale) => {
         acc += item.price * item.qty!
         return acc
     }, 0)
+})
+
+const hasItems = computed(() => {
+    return Object.keys(items.value).length > 0
 })
 
 function amount(item: main.Sale) {
@@ -46,6 +54,20 @@ function removeItem(item: main.Sale) {
     items.value = removeFromCart(item)
 }
 
+function editItem(item: main.Sale) {
+    isEditing.value = item.articleId
+}
+
+function saveChanges() {
+    if (isEditing.value === undefined) return
+    items.value[isEditing.value] = {
+        ...items.value[isEditing.value],
+        qty: Number(items.value[isEditing.value].qty)
+    }
+
+    isEditing.value = undefined
+
+}
 items.value = getStoredCart()
 
 </script>
@@ -67,16 +89,37 @@ items.value = getStoredCart()
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody v-if="hasItems">
                 <tr v-for="(item, key) in items" :key="key">
                     <td>{{ item.code }}</td>
                     <td>{{ item.description }}</td>
                     <td class="text-right price">{{ item.price }}</td>
-                    <td class="text-center">{{ item.qty }}</td>
+                    <td class="text-center" v-if="!isEditing || isEditing !== item.articleId">{{ item.qty }}</td>
+                    <td class="text-center" v-else>
+                        <FormInput type="number" v-model="item.qty" style="width: 100px; margin: 0 auto" @keyup.enter.stop="saveChanges" />
+                    </td>
                     <td class="text-right price">{{ amount(item) }}</td>
                     <td>
-                        <Button variant="tertiary" label="Eliminar" @click="removeItem(item)"></Button>
+                        <div class="flex row gap justify-center" v-if="!isEditing || isEditing !== item.articleId">
+                            <Button variant="tertiary" @click="removeItem(item)"> 
+                                <DeleteIcon />
+                            </Button>
+                            <Button variant="tertiary" @click="editItem(item)"> 
+                                <EditIcon />
+                            </Button>
+                        </div>
+                        <div class="flex row gap justify-center" v-else>
+                            <Button variant="tertiary" @click="saveChanges">
+                                <CheckIcon />
+                            </Button>
+                        </div>
                     </td>
+
+                </tr>
+            </tbody>
+            <tbody v-else>
+                <tr>
+                    <td colspan="6">No hay artículos en el carrito.</td>
                 </tr>
             </tbody>
         </table>

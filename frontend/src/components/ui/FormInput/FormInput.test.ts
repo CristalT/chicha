@@ -25,4 +25,16 @@ describe('FormInput Component', () => {
 
         expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['TEXT'])
     })
+
+    it('exposes focus method', async () => {
+        const wrapper = mount(FormInput)
+        wrapper.vm.focus()
+        expect(wrapper.find('input').element.focus).toBeTruthy()
+    })
+
+    it ('exposes select method', async () => {
+        const wrapper = mount(FormInput)
+        wrapper.vm.select()
+        expect(wrapper.find('input').element.select).toBeTruthy()
+    })
 })

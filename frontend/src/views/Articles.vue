@@ -3,8 +3,7 @@ import { CreateArticle, GetArticles, UpdateArticle } from '../../wailsjs/go/main
 import { computed, onMounted, reactive, ref } from 'vue'
 import ArticleModal from '../components/ArticleModal.vue'
 import useToast from '../composables/useToast';
-import FormInput from '../components/FormInput'
-import Button from '../components/Button.vue'
+import {FormInput, Button} from '../components/ui'
 import useCart from '../composables/useCart'
 import SaleModal from '../components/SaleModal.vue';
 import Layout from '../components/Layout.vue';

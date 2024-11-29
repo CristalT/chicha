@@ -24,12 +24,10 @@ const value = computed({
 })
 
 function focus() {
-    // @ts-ignore
     input.value?.focus()    
 }
 
 function select() {
-    // @ts-ignore
     input.value?.select()
 }
 

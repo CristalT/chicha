@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import useCart from '../composables/useCart';
-import Button from '../components/Button.vue'
 
 import { main } from '../../wailsjs/go/models'
 import { computed, ref } from 'vue';
@@ -8,7 +7,7 @@ import Layout from '../components/Layout.vue';
 import { Sale } from '../../wailsjs/go/main/App';
 import { useRouter } from 'vue-router';
 import { DeleteIcon, EditIcon, CheckIcon } from '../components/Icons';
-import FormInput from '../components/FormInput';
+import { FormInput, Button } from '../components/ui';
 
 
 const router = useRouter()
@@ -96,15 +95,16 @@ items.value = getStoredCart()
                     <td class="text-right price">{{ item.price }}</td>
                     <td class="text-center" v-if="!isEditing || isEditing !== item.articleId">{{ item.qty }}</td>
                     <td class="text-center" v-else>
-                        <FormInput type="number" v-model="item.qty" style="width: 100px; margin: 0 auto" @keyup.enter.stop="saveChanges" />
+                        <FormInput type="number" v-model="item.qty" style="width: 100px; margin: 0 auto"
+                            @keyup.enter.stop="saveChanges" />
                     </td>
                     <td class="text-right price">{{ amount(item) }}</td>
                     <td>
                         <div class="flex row gap justify-center" v-if="!isEditing || isEditing !== item.articleId">
-                            <Button variant="tertiary" @click="removeItem(item)"> 
+                            <Button variant="tertiary" @click="removeItem(item)">
                                 <DeleteIcon />
                             </Button>
-                            <Button variant="tertiary" @click="editItem(item)"> 
+                            <Button variant="tertiary" @click="editItem(item)">
                                 <EditIcon />
                             </Button>
                         </div>

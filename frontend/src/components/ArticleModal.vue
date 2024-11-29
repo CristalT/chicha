@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import FormInput from './FormInput'
-import Button from './Button.vue'
-import Modal from './Modal.vue'
+import { Button, FormInput } from './ui'
+import Modal from './Modal/Modal.vue'
 import { computed, ref, watchEffect } from 'vue';
 import { main } from '../../wailsjs/go/models';
 
@@ -31,7 +30,8 @@ watchEffect(() => {
             <div class="row gap">
                 <FormInput label="Stock" type="number" v-model="data.stock" />
                 <FormInput label="Costo" type="number" v-model="data.fob" />
-                <FormInput label="Precio" type="number" v-model="data.price" @keypress.enter.stop="$emit('save', data)" />
+                <FormInput label="Precio" type="number" v-model="data.price"
+                    @keypress.enter.stop="$emit('save', data)" />
             </div>
         </div>
 

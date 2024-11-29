@@ -1,0 +1,1 @@
+export { default as SaleModal } from './SaleModal.vue'

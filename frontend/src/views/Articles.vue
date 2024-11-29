@@ -3,9 +3,9 @@ import { CreateArticle, GetArticles, UpdateArticle } from '../../wailsjs/go/main
 import { computed, onMounted, reactive, ref } from 'vue'
 import ArticleModal from '../components/ArticleModal.vue'
 import useToast from '../composables/useToast';
-import {FormInput, Button} from '../components/ui'
+import { FormInput, Button } from '../components/ui'
 import useCart from '../composables/useCart'
-import SaleModal from '../components/SaleModal.vue';
+import { SaleModal } from '../components/SaleModal';
 import Layout from '../components/Layout.vue';
 import { main } from '../../wailsjs/go/models';
 import { CartIcon, AddIcon } from '../components/Icons';
@@ -233,18 +233,10 @@ onMounted(() => {
   </Layout>
 
 
-  <SaleModal 
-    v-model="sale" 
-    :visible="isAddToCartModalVisible" 
-    @addToCart="addItemToCart"
-    @close="isAddToCartModalVisible = false" 
-    @edit="openEdit" />
-  <ArticleModal 
-    :title="articleModalTitle" 
-    :visible="isArticleModalVisible" 
-    v-model="article"
-    @cancel="closeArticleModal" 
-    @save="save" />
+  <SaleModal v-model="sale" :visible="isAddToCartModalVisible" @addToCart="addItemToCart"
+    @close="isAddToCartModalVisible = false" @edit="openEdit" />
+  <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
+    @cancel="closeArticleModal" @save="save" />
 </template>
 
 <style lang="css" scoped>

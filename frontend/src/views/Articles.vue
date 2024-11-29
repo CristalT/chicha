@@ -6,8 +6,8 @@ import useToast from '../composables/useToast';
 import FormInput from '../components/FormInput'
 import Button from '../components/Button.vue'
 import useCart from '../composables/useCart'
-import ShowArticleModal from '../components/ShowArticleModal.vue';
-import Layout from '../components/Layout.vue'
+import SaleModal from '../components/SaleModal.vue';
+import Layout from '../components/Layout.vue';
 import { main } from '../../wailsjs/go/models';
 
 
@@ -27,10 +27,17 @@ const isArticleModalVisible = ref(false)
 const isAddToCartModalVisible = ref(false)
 const articleModalTitle = ref('')
 const article = ref<main.Article>({
-  id: 0,
   code: '',
   description: '',
   stock: 0,
+  fob: 0,
+  price: 0
+})
+const sale = ref<main.Sale>({
+  articleId: 0,
+  code: '',
+  description: '',
+  qty: 0,
   fob: 0,
   price: 0
 })
@@ -45,14 +52,19 @@ async function getArticles() {
 }
 
 function showAddToCart(item: main.Article) {
+  if (!item.id) return;
   isAddToCartModalVisible.value = true
-  article.value = item
-  article.value.qty = 1
+  sale.value = {
+    articleId: item.id,
+    code: item.code,
+    description: item.description,
+    fob: item.fob,
+    price: item.price,
+  }
 }
 
 function newArticle() {
   article.value = {
-    id: 0,
     code: '',
     description: '',
     stock: 0,
@@ -93,8 +105,17 @@ function save(article: main.Article) {
   }
 }
 
-function addItemToCart(item: main.Sale) {
-  addToCart(item)
+function addItemToCart({ article, qty }: { article: main.Sale, qty: number }) {
+  const sale = {
+    articleId: article.articleId,
+    code: article.code,
+    description: article.description,
+    qty,
+    fob: article.fob,
+    price: article.price
+  }
+
+  addToCart(sale)
   isAddToCartModalVisible.value = false
   searchInput.value?.focus()
   searchInput.value?.select()
@@ -159,6 +180,8 @@ onMounted(() => {
 
   getArticles()
 })
+
+
 </script>
 <template>
   <Layout>
@@ -200,17 +223,24 @@ onMounted(() => {
 
         <Button :label="`Memo de Venta: $ ${total}`" @click="$router.push({ name: 'sale' })" />
       </div>
-      
 
     </template>
 
   </Layout>
 
 
-  <ShowArticleModal v-model="article" :visible="isAddToCartModalVisible" @addToCart="addItemToCart"
-    @close="isAddToCartModalVisible = false" @edit="openEdit" />
-  <ArticleModal :title="articleModalTitle" :visible="isArticleModalVisible" v-model="article"
-    @cancel="closeArticleModal" @save="save" />
+  <SaleModal 
+    v-model="sale" 
+    :visible="isAddToCartModalVisible" 
+    @addToCart="addItemToCart"
+    @close="isAddToCartModalVisible = false" 
+    @edit="openEdit" />
+  <ArticleModal 
+    :title="articleModalTitle" 
+    :visible="isArticleModalVisible" 
+    v-model="article"
+    @cancel="closeArticleModal" 
+    @save="save" />
 </template>
 
 <style lang="css" scoped>

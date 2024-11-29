@@ -1,7 +1,7 @@
 export namespace main {
 	
 	export class Article {
-	    id: number;
+	    id?: number;
 	    code: string;
 	    description: string;
 	    stock: number;
@@ -23,7 +23,8 @@ export namespace main {
 	    }
 	}
 	export class Sale {
-	    id: number;
+	    id?: number;
+	    articleId: number;
 	    code: string;
 	    description: string;
 	    fob: number;
@@ -37,6 +38,7 @@ export namespace main {
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
+	        this.articleId = source["articleId"];
 	        this.code = source["code"];
 	        this.description = source["description"];
 	        this.fob = source["fob"];

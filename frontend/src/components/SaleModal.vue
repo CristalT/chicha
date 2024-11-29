@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import FormInput from './FormInput'
 import Button from './Button.vue'
-import { useTemplateRef, watchEffect } from 'vue';
+import { ref, useTemplateRef, watchEffect } from 'vue';
 import Modal from './Modal.vue';
 import { main } from '../../wailsjs/go/models';
 
@@ -13,9 +13,10 @@ defineProps<{
 
 const qtyInput = useTemplateRef<HTMLInputElement>('qty-input')
 
-const article = defineModel<main.Article>({ required: true })
+const article = defineModel<main.Sale>({ required: true })
+const qty = ref(1)
 
-function edit(article: main.Article) {
+function edit(article: main.Sale) {
     emit('edit', article)
 }
 
@@ -30,12 +31,12 @@ watchEffect(() => {
         <h3>Código: {{ article.code }}</h3>
         <h3>Precio: $ {{ article.price }}</h3>
         <h3>Cantidad:
-            <FormInput type="number" ref="qty-input" v-model="article.qty" @keyup.enter.stop="emit('addToCart', article)" />
+            <FormInput type="number" ref="qty-input" v-model="qty" @keyup.enter.stop="emit('addToCart', article)" />
         </h3>
 
         <template #footer>
             <Button variant="secondary" label="Editar" @click="edit(article)" />
-            <Button variant="primary" label="Agregar al Carrito" @click="emit('addToCart', article)" />
+            <Button variant="primary" label="Agregar al Carrito" @click="emit('addToCart', {article, qty})" />
         </template>
     </Modal>
 </template>

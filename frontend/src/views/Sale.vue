@@ -12,7 +12,7 @@ const router = useRouter()
 
 const { getStoredCart } = useCart()
 
-const { finishCart } = useCart()
+const { finishCart, removeFromCart } = useCart()
 
 const emit = defineEmits(['close', 'finish'])
 const items = ref<Record<string, main.Sale>>({})
@@ -29,15 +29,21 @@ function amount(item: main.Sale) {
 }
 
 function finish() {
-    Sale(Object.values(items.value)).then(() => {
+    const payload = Object.values(items.value)
+
+    Sale(payload).then(() => {
         finishCart()
-        emit('finish')
+        router.push({ name: 'articles' })
     }).catch(console.log)
 }
 
 function emptyCart() {
     finishCart()
     router.push({ name: 'articles' })
+}
+
+function removeItem(item: main.Sale) {
+    items.value = removeFromCart(item)
 }
 
 items.value = getStoredCart()
@@ -58,15 +64,19 @@ items.value = getStoredCart()
                     <th>Precio</th>
                     <th>Cantidad</th>
                     <th>Importe</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, key) in items" :key>
+                <tr v-for="(item, key) in items" :key="key">
                     <td>{{ item.code }}</td>
                     <td>{{ item.description }}</td>
                     <td class="text-right price">{{ item.price }}</td>
                     <td class="text-center">{{ item.qty }}</td>
                     <td class="text-right price">{{ amount(item) }}</td>
+                    <td>
+                        <Button variant="tertiary" label="Eliminar" @click="removeItem(item)"></Button>
+                    </td>
                 </tr>
             </tbody>
         </table>

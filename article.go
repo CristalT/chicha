@@ -1,7 +1,7 @@
 package main
 
 type Article struct {
-	Id          int64   `json:"id"`
+	Id          int64   `json:"id,omitempty"`
 	Code        string  `json:"code"`
 	Description string  `json:"description"`
 	Stock       int     `json:"stock"`
@@ -19,12 +19,14 @@ func (app *App) UpdateArticle(a Article) error {
 	return db.Save(&a).Error
 }
 
+type Querier interface {
+	GetByTerms(terms string) ([]Article, error)
+}
+
 func (app *App) GetArticles(orderBy string, orderType string, terms string) ([]Article, error) {
 	db := GetConnection()
-	db.Order(orderBy + " " + orderType)
-	if terms != "" {
-		db.Where("code = ? OR description LIKE ?", terms, "%"+terms+"%")
-	}
+
 	var articles []Article
-	return articles, db.Find(&articles).Error
+
+	return articles, db.Where("code = ?", terms).Or("description LIKE ?", "%"+terms+"%").Order(orderBy + " " + orderType).Find(&articles).Error
 }

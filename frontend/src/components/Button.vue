@@ -16,6 +16,7 @@ button {
     padding: 10px 16px;
     border-radius: 3px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .primary {
@@ -37,10 +38,11 @@ button {
 }
 
 .tertiary {
-    background-color: #fff;
-    color: #3f1055;
+    background-color: transparent;
+    color: var(--secondary-color);
 }
 .tertiary:hover {
-    background-color: #ccc;
+    background-color: rgba(81, 23, 139, 0.2);
+
 }
 </style>

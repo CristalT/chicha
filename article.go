@@ -4,7 +4,7 @@ type Article struct {
 	Id          int64   `json:"id,omitempty"`
 	Code        string  `json:"code"`
 	Description string  `json:"description"`
-	Stock       int     `json:"stock"`
+	Stock       float32 `json:"stock"`
 	Fob         float32 `json:"fob"`
 	Price       float32 `json:"price"`
 }
@@ -28,5 +28,9 @@ func (app *App) GetArticles(orderBy string, orderType string, terms string) ([]A
 
 	var articles []Article
 
-	return articles, db.Where("code = ?", terms).Or("description LIKE ?", "%"+terms+"%").Order(orderBy + " " + orderType).Find(&articles).Error
+	if terms != "" {
+		return articles, db.Where("code = ?", terms).Or("description LIKE ?", "%"+terms+"%").Order(orderBy + " " + orderType).Find(&articles).Error
+	}
+
+	return articles, db.Order(orderBy + " " + orderType).Find(&articles).Error
 }

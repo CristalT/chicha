@@ -169,11 +169,12 @@ onMounted(() => {
 
     const isNumber = key >= 48 && key <= 57
     const isLetter = e.code === `Key${e.key.toUpperCase()}`
+    const isBackspace = e.code === 'Backspace'
 
 
     if (someModalIsVisible.value) return;
 
-    if (isLetter || isNumber) { // detects only letters and numbers
+    if (isLetter || isNumber || isBackspace) { // detects only letters and numbers
       searchInput.value?.focus()
     }
   })

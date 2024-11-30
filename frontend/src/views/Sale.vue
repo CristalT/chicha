@@ -6,7 +6,7 @@ import { computed, ref } from 'vue';
 import Layout from '../components/Layout.vue';
 import { Sale } from '../../wailsjs/go/main/App';
 import { useRouter } from 'vue-router';
-import { DeleteIcon, EditIcon, CheckIcon } from '../components/Icons';
+import { DeleteIcon, EditIcon, CheckIcon, ArrowLeftIcon } from '../components/Icons';
 import { FormInput, Button } from '../components/ui';
 
 
@@ -74,7 +74,7 @@ items.value = getStoredCart()
     <Layout>
         <template #header>
             <div class="title">
-                Memo de venta
+                Carrito
             </div>
         </template>
         <table>
@@ -129,10 +129,16 @@ items.value = getStoredCart()
                 Total: <strong>$ {{ total }}</strong>
             </div>
             <div class="row gap">
-                <Button label="Volver" variant="tertiary" @click="$router.push({ name: 'articles' })" />
+                <Button variant="tertiary" @click="$router.push({ name: 'articles' })">
+                    <ArrowLeftIcon /> Volver
+                </Button>
 
-                <Button label="Vaciar" @click="emptyCart" variant="secondary" />
-                <Button label="Finalizar" @click="finish" />
+                <Button @click="emptyCart" variant="secondary">
+                    <DeleteIcon /> Vaciar
+                </Button>
+                <Button @click="finish">
+                    <CheckIcon /> Finalizar
+                </Button>
             </div>
         </template>
     </Layout>

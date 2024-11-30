@@ -1,16 +1,20 @@
 <template>
-    <header>
-        <slot name="header"></slot>
-    </header>
-    <main>
-        <slot></slot>
-    </main>
-    <footer>
-        <slot name="footer"></slot>
-    </footer>
+  <header>
+    <slot name="header"></slot>
+  </header>
+  <main>
+    <slot></slot>
+  </main>
+  <footer>
+    <slot name="footer"></slot>
+  </footer>
 </template>
 
 <style lang="css" scoped>
+.container {
+  padding: 0 16px;
+}
+
 header {
   position: fixed;
   width: 100%;
@@ -18,6 +22,8 @@ header {
   align-items: center;
   justify-content: center;
   height: 65px;
+  padding: 0 8px;
+  box-sizing: border-box;
 }
 
 main {
@@ -26,6 +32,8 @@ main {
   height: calc(100vh - 130px);
   position: fixed;
   width: 100%;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 footer {

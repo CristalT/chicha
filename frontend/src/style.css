@@ -35,17 +35,20 @@ body {
     height: 100vh;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
 .text-center {
     text-align: center;
 }
 
 .text-right {
     text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-bold {
+    font-weight: bold;
 }
 
 .row {
@@ -69,41 +72,47 @@ table {
     text-decoration: underline;
 }
 
-table thead {
-    position: sticky;
-    top: 0;
-    background-color: #3f1055;
-    color: #fff;
-    z-index: 10;
-  
-    & tr th {
-      padding: 8px;
-  
-      cursor: pointer;
-  
-      &:hover {
-        text-decoration: underline;
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    & thead {
+        position: sticky;
+        top: 0;
+        background-color: #3f1055;
+        color: #fff;
+        z-index: 10;
+      
+        & tr th {
+          padding: 8px 16px;
+      
+          cursor: pointer;
+      
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+    }
+
+    & tbody tr {
+        cursor: pointer;
+        transition: all .1s ease;
+        border-bottom: 1px solid #aaa;
+        
+        &:hover {
+          background-color: #ccc;
+        }
+      
+        & td {
+          padding: 8px 16px;
+          height: 30px;
+          position: relative;
+      
+          &.price::before {
+            content: '$';
+            position: absolute;
+            left: 10px;
+          }
+        }
       }
-    }
-  }
-  
-  table tbody tr {
-    cursor: pointer;
-    transition: all .1s ease;
-  
-    &:hover {
-      background-color: #ccc;
-    }
-  
-    & td {
-      border: 1px solid #aaa;
-      padding: 8px;
-      position: relative;
-  
-      &.price::before {
-        content: '$';
-        position: absolute;
-        left: 10px;
-      }
-    }
-  }
+}

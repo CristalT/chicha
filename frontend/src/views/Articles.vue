@@ -54,6 +54,7 @@ async function getArticles() {
 function showAddToCart(item: main.Article) {
   if (!item.id) return;
   isAddToCartModalVisible.value = true
+  article.value = item
   sale.value = {
     articleId: item.id,
     code: item.code,
@@ -126,8 +127,7 @@ function closeArticleModal() {
   getArticles()
 }
 
-function openEdit(item: main.Article) {
-  article.value = item
+function openEdit() {
   articleModalTitle.value = 'Editar artículo'
   isAddToCartModalVisible.value = false
   isArticleModalVisible.value = true
@@ -197,10 +197,10 @@ onMounted(() => {
       <thead>
         <tr>
           <th @click="setOrderBy('code')" :class="{ underline: params.orderBy === 'code' }">Código</th>
-          <th @click="setOrderBy('description')" :class="{ underline: params.orderBy === 'description' }">Descripción
+          <th class="text-left" @click="setOrderBy('description')" :class="{ underline: params.orderBy === 'description' }">Descripción
           </th>
           <th @click="setOrderBy('stock')" :class="{ underline: params.orderBy === 'stock' }">Stock</th>
-          <th @click="setOrderBy('price')" :class="{ underline: params.orderBy === 'price' }">Precio</th>
+          <th class="text-right" @click="setOrderBy('price')" :class="{ underline: params.orderBy === 'price' }">Precio</th>
         </tr>
       </thead>
       <tbody>

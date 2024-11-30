@@ -80,17 +80,17 @@ items.value = getStoredCart()
         <table>
             <thead>
                 <tr>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Importe</th>
+                    <th class="text-center">Código</th>
+                    <th class="text-left">Descripción</th>
+                    <th class="text-right">Precio</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-right">Importe</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody v-if="hasItems">
                 <tr v-for="(item, key) in items" :key="key">
-                    <td>{{ item.code }}</td>
+                    <td class="text-center">{{ item.code }}</td>
                     <td>{{ item.description }}</td>
                     <td class="text-right price">{{ item.price }}</td>
                     <td class="text-center" v-if="!isEditing || isEditing !== item.articleId">{{ item.qty }}</td>
@@ -125,8 +125,8 @@ items.value = getStoredCart()
         </table>
         <template #footer>
 
-            <div>
-                Total: <strong>$ {{ total }}</strong>
+            <div class="total">
+                Total: $ {{ total }}
             </div>
             <div class="row gap">
                 <Button variant="tertiary" @click="$router.push({ name: 'articles' })">
@@ -150,5 +150,9 @@ items.value = getStoredCart()
     text-align: center;
     color: var(--secondary-color);
     padding: 8px;
+}
+.total {
+    font-size: 1.5rem;
+    padding: 0 8px;
 }
 </style>
